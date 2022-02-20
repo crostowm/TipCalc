@@ -3,33 +3,27 @@ package docobj;
 import java.util.ArrayList;
 
 public class Employee {
-	private String name;
+	private String firstName, lastName, fullName;
 	private int empID;
 	private ArrayList<Shift> shifts = new ArrayList<Shift>();
-	public Employee(String name, int empID) {
-		super();
-		this.name = name;
-		this.empID = empID;
-	}
 	
-	public void addShift(Shift s)
+	/**
+   * @param firstName
+   * @param lastName
+   * @param empID
+   * @param shifts
+   */
+  public Employee(String firstName, String lastName, int empID)
+  {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    fullName = lastName + firstName;
+    this.empID = empID;
+  }
+
+  public void addShift(Shift s)
 	{
 		shifts.add(s);
-	}
-
-	
-	
-	
-	public String getName() {
-		return name;
-	}
-
-	public int getEmpID() {
-		return empID;
-	}
-
-	public ArrayList<Shift> getShifts() {
-		return shifts;
 	}
 
 	public double getTotalInshopHours() {
@@ -44,4 +38,45 @@ public class Employee {
 		return sum;
 	}
 
+  /**
+   * @return the firstName
+   */
+  public String getFirstName()
+  {
+    return firstName;
+  }
+
+  /**
+   * @return the lastName
+   */
+  public String getLastName()
+  {
+    return lastName;
+  }
+
+  /**
+   * @return the fullName
+   */
+  public String getFullName()
+  {
+    return fullName;
+  }
+
+  /**
+   * @return the empID
+   */
+  public int getEmpID()
+  {
+    return empID;
+  }
+
+  /**
+   * @return the shifts
+   */
+  public ArrayList<Shift> getShifts()
+  {
+    return shifts;
+  }
+
+	
 }
