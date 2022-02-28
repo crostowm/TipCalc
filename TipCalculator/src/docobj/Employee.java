@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Employee {
 	private String firstName, lastName, fullName;
-	private int empID;
+	private int payrollID;
 	private ArrayList<Shift> shifts = new ArrayList<Shift>();
 	
 	/**
@@ -18,7 +18,7 @@ public class Employee {
     this.firstName = firstName;
     this.lastName = lastName;
     fullName = lastName + firstName;
-    this.empID = empID;
+    this.payrollID = empID;
   }
 
   public void addShift(Shift s)
@@ -65,9 +65,9 @@ public class Employee {
   /**
    * @return the empID
    */
-  public int getEmpID()
+  public int getPayrollID()
   {
-    return empID;
+    return payrollID;
   }
 
   /**

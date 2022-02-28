@@ -1,3 +1,4 @@
+package io;
 import java.io.File;
 import java.io.PrintWriter;
 import java.time.format.DateTimeFormatter;
@@ -44,10 +45,10 @@ public class BranchWriter
           {
             int branchID = branchData.get(e.getFullName());
             String type = "tips";
-            int transID = 1;
             GregorianCalendar c = (GregorianCalendar) Calendar.getInstance();
-            String date = c.toZonedDateTime().format(DateTimeFormatter.ofPattern("YYYY-mm-dd"));
-            writer.println(String.format("%d,%s,%s,%s,%.2f,%d,%d,%s,Tip Portion W/E %s", branchID,
+            String transID = c.toZonedDateTime().format(DateTimeFormatter.ofPattern("MMddYYYY"));
+            String date = c.toZonedDateTime().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"));
+            writer.println(String.format("%d,%s,%s,%s,%.2f,%s,%d,%s,Tip Portion W/E %s", branchID,
                 e.getFirstName(), e.getLastName(), type, s.getDollarTipPortion(e.getFullName()),
                 transID, s.getStoreNum(), date, we));
           }

@@ -7,6 +7,8 @@ import docobj.Employee;
 import docobj.Store;
 import io.AttendanceReader;
 import io.BranchReader;
+import io.BranchWriter;
+import io.PayrollWriter;
 
 public class Main
 {
@@ -59,6 +61,9 @@ public class Main
 
     BranchWriter branchWriter = new BranchWriter("2_15", payoutFilePath, group, branchData);
     branchWriter.writeBulkDisbursementCSV();
+    
+    PayrollWriter payrollWriter = new PayrollWriter("2_15", payoutFilePath, group);
+    payrollWriter.writePayrollExportCSV();
     
     keyboard.close();
   }
