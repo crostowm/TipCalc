@@ -22,7 +22,7 @@ public class Main {
 		Scanner keyboard = new Scanner(System.in);
 		System.out.println("Payout Period (mm-dd-yyyy_mm-dd-yyyy");
 		//String payPeriod = keyboard.nextLine();
-		// String payPeriod = "02-14-2022_02-15-2022";
+		//String payPeriod = "02-14-2022_02-15-2022";
 		String payPeriod = "02-16-2022_03-01-2022";
 		
 		// Read Attendance Files
@@ -33,7 +33,7 @@ public class Main {
 			AttendanceReader attendanceData = new AttendanceReader(f);
 			group.add(attendanceData.getStore());
 		}
-
+		//Read Total Tips from txt or have them enter via keyboard
 		try {
 			TotalTipReader ttr = new TotalTipReader(baseFilePath + "\\TotalTips" + payPeriod + ".txt");
 			ttr.applyTotalTipsToStores(group);
@@ -42,19 +42,8 @@ public class Main {
 			for (Store s : group) {
 				System.out.println("Total Tips For " + s.getStoreNum());
 				s.setTotalTips(keyboard.nextDouble());
-				// s.setTotalTips(120);
 			}
 		}
-		/*
-		 * 
-		 */
-		/*
-		 * group.get(0).setTotalTips(62.95); group.get(1).setTotalTips(39.72);
-		 * group.get(2).setTotalTips(22.78); group.get(3).setTotalTips(45.57);
-		 * group.get(4).setTotalTips(16.46); group.get(5).setTotalTips(43);
-		 * group.get(6).setTotalTips(56.85); group.get(7).setTotalTips(19.38);
-		 */
-
 
 		// Read Branch Data
 		BranchReader branchReader = new BranchReader(new File(baseFilePath + "\\Branch.csv"));
@@ -88,6 +77,17 @@ public class Main {
 			System.out.println("Total Hours: " + s.getTotalInshopHours());
 			System.out.println();
 		}
+		System.out.println("Average hourly increase for all stores: $" + getAverageHourlyIncrease());
+	}
+
+	private static Double getAverageHourlyIncrease() {
+		double sumTotalTips = 0;
+		double sumInshopHours = 0;
+		for (Store s : group) {
+			sumTotalTips += s.getTotalTips();
+			sumInshopHours += s.getTotalInshopHours();
+		}
+		return sumTotalTips / sumInshopHours;
 	}
 
 	private static void writeStores(String weekending) {
