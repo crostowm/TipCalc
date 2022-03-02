@@ -25,9 +25,13 @@ public class AttendanceReader {
 				String[] consolidatedList = line.split(",");
 				if (consolidatedList.length >= 1) {
 					if (consolidatedList[0].equals("Employee #")) {
-						int id = Integer.parseInt(consolidatedList[11]);
 						String lastName = consolidatedList[12].substring(1);
 						String firstName = consolidatedList[13].substring(1, consolidatedList[13].length() - 1).trim();
+						int id = -1;
+						if (consolidatedList[11].equals("Not Set"))
+							System.out.println(firstName + " " + lastName + " id not set");
+						else
+							id = Integer.parseInt(consolidatedList[11]);
 						Employee e = getEmployee(firstName, lastName);
 						if (e == null) {
 							e = new Employee(firstName, lastName, id);
@@ -37,7 +41,8 @@ public class AttendanceReader {
 						double payHour = Double.parseDouble(consolidatedList[16]);
 						String jobType = consolidatedList[18];
 						double rate = Double.parseDouble(removeDollar(consolidatedList[20]));
-						//System.out.println(String.format("%d %s %s %f", id, fullName, jobType, payHour));
+						// System.out.println(String.format("%d %s %s %f", id, fullName, jobType,
+						// payHour));
 						e.addShift(new Shift(jobType, payHour, rate));
 					}
 				}
@@ -77,5 +82,5 @@ public class AttendanceReader {
 	public Store getStore() {
 		return store;
 	}
-	
+
 }

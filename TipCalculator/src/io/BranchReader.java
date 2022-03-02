@@ -24,7 +24,6 @@ public class BranchReader
         ArrayList<String> consolidatedList = splitButConsolidateSpecial(line.split(","), '"');
         if (consolidatedList.size() > 3)
         {
-          System.out.println(consolidatedList.get(3) + ": " + consolidatedList.get(2));
           try
           {
             branchInfo.put(consolidatedList.get(3), Integer.parseInt(consolidatedList.get(2)));

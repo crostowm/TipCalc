@@ -14,7 +14,7 @@ public class PayrollWriter {
 	private ArrayList<Store> group;
 
 	public PayrollWriter(String we, String payoutFilePath, ArrayList<Store> group) {
-		payrollPath = payoutFilePath + "\\TipPayrollExport" + we + ".csv";
+		payrollPath = payoutFilePath + "\\TipPayrollExport_" + we + ".csv";
 		this.group = group;
 	}
 

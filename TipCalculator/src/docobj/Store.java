@@ -56,9 +56,14 @@ public class Store {
 		this.totalTips = totalTips;
 	}
 
-	public void writeToNote(String filePath) {
+	public double getTotalTips()
+	{
+		return totalTips;
+	}
+	
+	public void writeToNote(String filePath, String weekending) {
 		try {
-			PrintWriter pw = new PrintWriter(new File(filePath + "\\" + storeNum + "payout.txt"));
+			PrintWriter pw = new PrintWriter(new File(filePath + "\\" + weekending + "_" + storeNum + "payout.txt"));
 			pw.println(getStoreNum() + "   Total Hours: " + getTotalInshopHours() + "   Total Tips$" + totalTips);
 			for (Employee e : getEmployees()) {
 				pw.println(String.format(
