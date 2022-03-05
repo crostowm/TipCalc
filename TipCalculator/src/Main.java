@@ -21,19 +21,19 @@ public class Main {
 		// Gather Tip Data
 		Scanner keyboard = new Scanner(System.in);
 		System.out.println("Payout Period (mm-dd-yyyy_mm-dd-yyyy");
-		//String payPeriod = keyboard.nextLine();
+		// String payPeriod = keyboard.nextLine();
 		String payPeriod = "02-14-2022_02-15-2022";
 		//String payPeriod = "02-16-2022_03-01-2022";
-		
+
 		// Read Attendance Files
 		File TipAttendanceFolder = new File(attendanceFilePath + payPeriod);
-		
+
 		// Read Attendance Reports
 		for (File f : TipAttendanceFolder.listFiles()) {
 			AttendanceReader attendanceData = new AttendanceReader(f);
 			group.add(attendanceData.getStore());
 		}
-		//Read Total Tips from txt or have them enter via keyboard
+		// Read Total Tips from txt or have them enter via keyboard
 		try {
 			TotalTipReader ttr = new TotalTipReader(baseFilePath + "\\TotalTips" + payPeriod + ".txt");
 			ttr.applyTotalTipsToStores(group);
@@ -67,7 +67,8 @@ public class Main {
 
 	private static void printStores() {
 		for (Store s : group) {
-			System.out.println(s.getStoreNum() + " $" + s.getTotalTips() + " Increase per hour: $" + (s.getTotalTips()/s.getTotalInshopHours()));
+			System.out.println(s.getStoreNum() + " $" + s.getTotalTips() + " Increase per hour: $"
+					+ (s.getTotalTips() / s.getTotalInshopHours()));
 			for (Employee e : s.getEmployees()) {
 				System.out
 						.println(String.format("%25s total Inshop Hours: %5.2f Tip Portion: %1.6f Actual Amount: %4.2f",

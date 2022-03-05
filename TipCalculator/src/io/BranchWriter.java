@@ -41,7 +41,7 @@ public class BranchWriter {
 							int branchID = branchData.get(e.getFullName());
 							String type = "tips";
 							GregorianCalendar c = (GregorianCalendar) Calendar.getInstance();
-							String transID = c.toZonedDateTime().format(DateTimeFormatter.ofPattern("MMddYYYY")) + branchID;
+							String transID = we + s.getStoreNum() + branchID;
 							String date = c.toZonedDateTime().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"));
 							writer.println(String.format("%d,%s,%s,%s,%.2f,%s,%s,%s,Tip Portion %s", branchID,
 									e.getFirstName(), e.getLastName(), type, s.getDollarTipPortion(e.getFullName()),
