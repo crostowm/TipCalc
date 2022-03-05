@@ -22,8 +22,8 @@ public class Main {
 		Scanner keyboard = new Scanner(System.in);
 		System.out.println("Payout Period (mm-dd-yyyy_mm-dd-yyyy");
 		//String payPeriod = keyboard.nextLine();
-		//String payPeriod = "02-14-2022_02-15-2022";
-		String payPeriod = "02-16-2022_03-01-2022";
+		String payPeriod = "02-14-2022_02-15-2022";
+		//String payPeriod = "02-16-2022_03-01-2022";
 		
 		// Read Attendance Files
 		File TipAttendanceFolder = new File(attendanceFilePath + payPeriod);
