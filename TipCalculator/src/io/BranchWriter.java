@@ -33,6 +33,7 @@ public class BranchWriter {
 	public void writeBulkDisbursementCSV() {
 		try {
 			writer = new PrintWriter(new File(branchPath));
+			writer.println("ID,First Name,Last Name,Type,Amount,Transaction ID,Location (optional),Disbursement Date (YYYY-MM-DD) (optional),Description (optional),Shift Timestamp (optional)");
 			for (Store s : group) {
 				for (Employee e : s.getEmployees()) {
 					try {
@@ -40,11 +41,12 @@ public class BranchWriter {
 							int branchID = branchData.get(e.getFullName());
 							String type = "tips";
 							GregorianCalendar c = (GregorianCalendar) Calendar.getInstance();
-							String transID = c.toZonedDateTime().format(DateTimeFormatter.ofPattern("MMddYYYY"));
+							String transID = we + s.getStoreNum() + branchID;
 							String date = c.toZonedDateTime().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"));
-							writer.println(String.format("%d,%s,%s,%s,%.2f,%s,%d,%s,Tip Portion W/E %s", branchID,
+							System.out.println("DDDATATSJDHAD  " + date);
+							writer.println(String.format("%d,%s,%s,%s,%.2f,%s,%s,%s,Tip Portion %s", branchID,
 									e.getFirstName(), e.getLastName(), type, s.getDollarTipPortion(e.getFullName()),
-									transID, s.getStoreNum(), date, we));
+									transID, "Jimmy Johns #" + s.getStoreNum(), date, we));
 						}
 					} catch (Exception ex) {
 						System.out.println(s.getStoreNum() + " " + e.getFullName() + " " + e.getPayrollID());

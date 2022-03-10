@@ -24,14 +24,39 @@ public class Main
     Scanner keyboard = new Scanner(System.in);
     System.out.println("Payout Period (mm-dd-yyyy_mm-dd-yyyy");
     // String payPeriod = keyboard.nextLine();
-    // String payPeriod = "02-14-2022_02-15-2022";
-    String payPeriod = "02-16-2022_03-01-2022";
+    String payPeriod = "02-14-2022_02-15-2022";
+    // String payPeriod = "02-16-2022_03-01-2022";
 
     // Read Attendance Files
     File TipAttendanceFolder = new File(attendanceFilePath + payPeriod);
 
     // Read Attendance Reports
     for (File f : TipAttendanceFolder.listFiles())
+    {
+      AttendanceReader attendanceData = new AttendanceReader(f);
+      group.add(attendanceData.getStore());
+    }
+    // Read Total Tips from txt or have them enter via keyboard
+    try
+    {
+      TotalTipReader ttr = new TotalTipReader(baseFilePath + "\\TotalTips" + payPeriod + ".txt");
+      ttr.applyTotalTipsToStores(group);
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      for (Store s : group)
+      {
+        System.out.println("Total Tips For " + s.getStoreNum());
+        s.setTotalTips(keyboard.nextDouble());
+      }
+    }
+
+    // Read Attendance Files
+    File tipAttendanceFolder = new File(attendanceFilePath + payPeriod);
+
+    // Read Attendance Reports
+    for (File f : tipAttendanceFolder.listFiles())
     {
       AttendanceReader attendanceData = new AttendanceReader(f);
       group.add(attendanceData.getStore());
@@ -90,11 +115,13 @@ public class Main
 
         if (s.getDollarTipPortion(e.getFullName()) > 100)
         {
-          warnings += s.getStoreNum() + ": $" + s.getTotalTips() + "|" + s.getTotalInshopHours() + "hrs"
+          warnings += s.getStoreNum() + ": $" + s.getTotalTips() + "|" + s.getTotalInshopHours()
+              + "hrs"
               + String.format(
                   "%25s total Inshop Hours: %5.2f Tip Portion: %1.6f Actual Amount: %4.2f",
                   e.getFullName(), e.getTotalInshopHours(), s.getTipPortion(e.getFullName()),
-                  s.getDollarTipPortion(e.getFullName())) + "\n";
+                  s.getDollarTipPortion(e.getFullName()))
+              + "\n";
         }
       }
       System.out.println("Total Hours: " + s.getTotalInshopHours());
@@ -103,7 +130,7 @@ public class Main
     }
     System.out.println("Average hourly increase for all stores: $" + getAverageHourlyIncrease()
         + " Total: $" + sum);
-    
+
     System.out.println("\nWarnings");
     System.out.println(warnings);
   }
