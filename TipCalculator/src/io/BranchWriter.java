@@ -43,7 +43,6 @@ public class BranchWriter {
 							GregorianCalendar c = (GregorianCalendar) Calendar.getInstance();
 							String transID = we + s.getStoreNum() + branchID;
 							String date = c.toZonedDateTime().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"));
-							System.out.println("DDDATATSJDHAD  " + date);
 							writer.println(String.format("%d,%s,%s,%s,%.2f,%s,%s,%s,Tip Portion %s", branchID,
 									e.getFirstName(), e.getLastName(), type, s.getDollarTipPortion(e.getFullName()),
 									transID, "Jimmy Johns #" + s.getStoreNum(), date, we));
