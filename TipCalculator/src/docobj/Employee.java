@@ -30,7 +30,7 @@ public class Employee {
 		double sum = 0;
 		for(Shift s: shifts)
 		{
-			if(s.getShiftType().equals("In Shop"))
+			if(s.getShiftType().equals("In Shop") || s.getShiftType().equals("Person in Charge"))
 			{
 				sum += s.getPayHours();
 			}
