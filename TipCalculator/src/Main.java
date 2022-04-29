@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -11,149 +12,115 @@ import io.BranchWriter;
 import io.PayrollWriter;
 import io.TotalTipReader;
 
-//Git token
-//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
-public class Main
-{
-  public static ArrayList<Store> group = new ArrayList<Store>();
-  private static String baseFilePath = "C:\\Users\\crost\\OneDrive\\Documents\\Jimmy Johns\\TipResources";
-  private static String attendanceFilePath = baseFilePath + "\\TipAttendance";
-  private static String payoutFilePath = baseFilePath + "\\TipPayout";
+public class Main {
+	public static ArrayList<Store> group = new ArrayList<Store>();
+	private static String baseFilePath = "C:\\Users\\crost\\OneDrive\\Documents\\Jimmy Johns\\TipResources";
+	private static String attendanceFilePath = baseFilePath + "\\TipAttendance";
+	private static String payoutFilePath = baseFilePath + "\\TipPayout";
 
-  public static void main(String[] args)
-  {
-    // Gather Tip Data
-    Scanner keyboard = new Scanner(System.in);
-    System.out.println("Payout Period (mm-dd-yyyy_mm-dd-yyyy");
-    // String payPeriod = keyboard.nextLine();
-    String payPeriod = "02-14-2022_02-15-2022";
-    // String payPeriod = "02-16-2022_03-01-2022";
+	public static void main(String[] args) {
+		// Gather Tip Data
+		Scanner keyboard = new Scanner(System.in);
+		System.out.println("Payout Period (mm-dd-yyyy_mm-dd-yyyy");
+		// String payPeriod = keyboard.nextLine();
+		// String payPeriod = "02-14-2022_02-15-2022";
+		// String payPeriod = "02-16-2022_03-01-2022";
+		//String payPeriod = "03-02-2022_03-15-2022";
+		//String payPeriod = "03-16-2022_03-29-2022";
+		String payPeriod = "03-30-2022_04-12-2022";
+		
+		// Read Attendance Files
+		File tipAttendanceFolder = new File(attendanceFilePath + payPeriod);
 
-    // Read Attendance Files
-    File TipAttendanceFolder = new File(attendanceFilePath + payPeriod);
+		// Read Attendance Reports
+		for (File f : tipAttendanceFolder.listFiles()) {
+			AttendanceReader attendanceData = new AttendanceReader(f);
+			group.add(attendanceData.getStore());
+		}
+		// Read Total Tips from txt or have them enter via keyboard
+		try {
+			TotalTipReader ttr = new TotalTipReader(baseFilePath + "\\TotalTips" + payPeriod + ".txt");
+			ttr.applyTotalTipsToStores(group);
+		} catch (Exception e) {
+			e.printStackTrace();
+			for (Store s : group) {
+				System.out.println("Total Tips For " + s.getStoreNum());
+				s.setTotalTips(keyboard.nextDouble());
+			}
+		}
 
-    // Read Attendance Reports
-    for (File f : TipAttendanceFolder.listFiles())
-    {
-      AttendanceReader attendanceData = new AttendanceReader(f);
-      group.add(attendanceData.getStore());
-    }
-    // Read Total Tips from txt or have them enter via keyboard
-    try
-    {
-      TotalTipReader ttr = new TotalTipReader(baseFilePath + "\\TotalTips" + payPeriod + ".txt");
-      ttr.applyTotalTipsToStores(group);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      for (Store s : group)
-      {
-        System.out.println("Total Tips For " + s.getStoreNum());
-        s.setTotalTips(keyboard.nextDouble());
-      }
-    }
+		// Read Branch Data
+		BranchReader branchReader = new BranchReader(new File(baseFilePath + "\\Branch.csv"));
+		HashMap<String, Integer> branchData = branchReader.getBranchInfo();
 
-    // Read Attendance Files
-    File tipAttendanceFolder = new File(attendanceFilePath + payPeriod);
+		System.out.println(getSummaryMessage());
+		writeSummary(payPeriod);
+		writeStores(payPeriod);
 
-    // Read Attendance Reports
-    for (File f : tipAttendanceFolder.listFiles())
-    {
-      AttendanceReader attendanceData = new AttendanceReader(f);
-      group.add(attendanceData.getStore());
-    }
-    // Read Total Tips from txt or have them enter via keyboard
-    try
-    {
-      TotalTipReader ttr = new TotalTipReader(baseFilePath + "\\TotalTips" + payPeriod + ".txt");
-      ttr.applyTotalTipsToStores(group);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      for (Store s : group)
-      {
-        System.out.println("Total Tips For " + s.getStoreNum());
-        s.setTotalTips(keyboard.nextDouble());
-      }
-    }
+		BranchWriter branchWriter = new BranchWriter(payPeriod, payoutFilePath, group, branchData);
+		branchWriter.writeBulkDisbursementCSV();
 
-    // Read Branch Data
-    BranchReader branchReader = new BranchReader(new File(baseFilePath + "\\Branch.csv"));
-    HashMap<String, Integer> branchData = branchReader.getBranchInfo();
-    for (String s : branchData.keySet())
-    {
-      System.out.println(s);
-    }
-    System.out.println("_______________");
+		PayrollWriter payrollWriter = new PayrollWriter(payPeriod, payoutFilePath, group);
+		payrollWriter.writePayrollExportCSV();
 
-    printStores();
-    writeStores(payPeriod);
+		keyboard.close();
+	}
 
-    BranchWriter branchWriter = new BranchWriter(payPeriod, payoutFilePath, group, branchData);
-    branchWriter.writeBulkDisbursementCSV();
+	private static void writeSummary(String payPeriod) {
+		try
+		{
+		PrintWriter pw = new PrintWriter(new File(payoutFilePath + "\\" + payPeriod + "Summary.txt"));
+		pw.write(getSummaryMessage());
+		pw.flush();
+		pw.close();
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
 
-    PayrollWriter payrollWriter = new PayrollWriter(payPeriod, payoutFilePath, group);
-    payrollWriter.writePayrollExportCSV();
+	private static String getSummaryMessage() {
+		String message = "";
+		String warnings = "";
+		double sum = 0;
+		for (Store s : group) {
+			message += s.getStoreNum() + " $" + s.getTotalTips() + " Increase per hour: $"
+					+ (s.getTotalTips() / s.getTotalInshopHours()) + "\n";
+			for (Employee e : s.getEmployees()) {
+				message += String.format("%25s total Inshop Hours: %5.2f Tip Portion: %1.6f Actual Amount: %4.2f\n",
+						e.getFullName(), e.getTotalInshopHours(), s.getTipPortion(e.getFullName()),
+						s.getDollarTipPortion(e.getFullName()));
 
-    keyboard.close();
-  }
+				if (s.getDollarTipPortion(e.getFullName()) > 100) {
+					warnings += String.format(
+							"%d: $%6.2f|%6.2fhrs%25s total Inshop Hours: %5.2f Tip Portion: %1.6f Actual Amount: %4.2f",
+							s.getStoreNum(), s.getTotalTips(), s.getTotalInshopHours(), e.getFullName(),
+							e.getTotalInshopHours(), s.getTipPortion(e.getFullName()),
+							s.getDollarTipPortion(e.getFullName())) + "\n";
+				}
+			}
+			message += String.format("Total Hours: %6.2f\n\n", s.getTotalInshopHours());
+			sum += s.getTotalTips();
+		}
+		message += "\nAverage hourly increase for all stores: $" + getAverageHourlyIncrease() + " Total: $" + sum;
 
-  private static void printStores()
-  {
-    String warnings = "";
-    double sum = 0;
-    for (Store s : group)
-    {
-      System.out.println(s.getStoreNum() + " $" + s.getTotalTips() + " Increase per hour: $"
-          + (s.getTotalTips() / s.getTotalInshopHours()));
-      for (Employee e : s.getEmployees())
-      {
-        System.out.println(
-            String.format("%25s total Inshop Hours: %5.2f Tip Portion: %1.6f Actual Amount: %4.2f",
-                e.getFullName(), e.getTotalInshopHours(), s.getTipPortion(e.getFullName()),
-                s.getDollarTipPortion(e.getFullName())));
+		message += "\nWarnings\n" + warnings;
+		return message;
+	}
 
-        if (s.getDollarTipPortion(e.getFullName()) > 100)
-        {
-          warnings += s.getStoreNum() + ": $" + s.getTotalTips() + "|" + s.getTotalInshopHours()
-              + "hrs"
-              + String.format(
-                  "%25s total Inshop Hours: %5.2f Tip Portion: %1.6f Actual Amount: %4.2f",
-                  e.getFullName(), e.getTotalInshopHours(), s.getTipPortion(e.getFullName()),
-                  s.getDollarTipPortion(e.getFullName()))
-              + "\n";
-        }
-      }
-      System.out.println("Total Hours: " + s.getTotalInshopHours());
-      System.out.println();
-      sum += s.getTotalTips();
-    }
-    System.out.println("Average hourly increase for all stores: $" + getAverageHourlyIncrease()
-        + " Total: $" + sum);
+	private static Double getAverageHourlyIncrease() {
+		double sumTotalTips = 0;
+		double sumInshopHours = 0;
+		for (Store s : group) {
+			sumTotalTips += s.getTotalTips();
+			sumInshopHours += s.getTotalInshopHours();
+		}
+		return sumTotalTips / sumInshopHours;
+	}
 
-    System.out.println("\nWarnings");
-    System.out.println(warnings);
-  }
-
-  private static Double getAverageHourlyIncrease()
-  {
-    double sumTotalTips = 0;
-    double sumInshopHours = 0;
-    for (Store s : group)
-    {
-      sumTotalTips += s.getTotalTips();
-      sumInshopHours += s.getTotalInshopHours();
-    }
-    return sumTotalTips / sumInshopHours;
-  }
-
-  private static void writeStores(String weekending)
-  {
-    for (Store s : group)
-    {
-      s.writeToNote(payoutFilePath, weekending);
-    }
-  }
+	private static void writeStores(String weekending) {
+		for (Store s : group) {
+			s.writeToNote(payoutFilePath, weekending);
+		}
+	}
 }

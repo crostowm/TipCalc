@@ -13,7 +13,6 @@ public class TotalTipReader {
 		Scanner scanner = new Scanner(new File(filePath));
 		while (scanner.hasNext()) {
 			String line = scanner.nextLine();
-			System.out.println("---" + line);
 			totalTipAmounts.add(Double.parseDouble(line));
 		}
 		scanner.close();
@@ -30,6 +29,7 @@ public class TotalTipReader {
 		else
 		{
 			System.out.println("Read in tips size does not match group size");
+			System.out.println(totalTipAmounts.size() + "  " + group.size());
 		}
 		
 	}

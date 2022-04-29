@@ -41,8 +41,6 @@ public class AttendanceReader {
 						double payHour = Double.parseDouble(consolidatedList[16]);
 						String jobType = consolidatedList[18];
 						double rate = Double.parseDouble(removeDollar(consolidatedList[20]));
-						// System.out.println(String.format("%d %s %s %f", id, fullName, jobType,
-						// payHour));
 						e.addShift(new Shift(jobType, payHour, rate));
 					}
 				}
