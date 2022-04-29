@@ -27,7 +27,8 @@ public class Main {
 		// String payPeriod = "02-16-2022_03-01-2022";
 		//String payPeriod = "03-02-2022_03-15-2022";
 		//String payPeriod = "03-16-2022_03-29-2022";
-		String payPeriod = "03-30-2022_04-12-2022";
+		//String payPeriod = "03-30-2022_04-12-2022";
+		String payPeriod = "04-13-2022_04-26-2022";
 		
 		// Read Attendance Files
 		File tipAttendanceFolder = new File(attendanceFilePath + payPeriod);
